@@ -1,0 +1,22 @@
+## YAML Template.
+---
+spring:
+  cloud:
+    gateway:
+      mvc:  
+        routes:       
+          - id: service_a
+            uri: lb://service-a
+            predicates:
+              - Path=/api/v1/service-a/**
+            filters:
+              - RewritePath=/api/v1/service-a/(?<remaining>.*), /${remaining}
+
+server:
+  port: 8080
+
+---
+spring.config.activate.on-profile: docker
+
+server:
+  port: 8080
