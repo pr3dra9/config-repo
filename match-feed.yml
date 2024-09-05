@@ -1,0 +1,52 @@
+## YAML Template.
+---
+server:
+  port: 82
+  
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/feeddb
+    port: '3306'
+    username: root
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: 'true'
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    show-sql: 'true'
+  cloud:
+    stream:
+      poller.fixed-delay: 120000
+      bindings:
+        eventSupplier-out-0:
+          destination: matchEvent
+          content-type: application/json
+
+logging:
+  level:
+    rs.ac.bg.fon.mas.match_feed: TRACE
+
+api:
+  key:
+    name: x-apisports-key
+    value: a8cc6f5d9b76fd9fec768502c57ef8f1
+  base-url: https://v3.football.api-sports.io
+  endpoints:
+    get-matches: /fixtures?live=all
+    get-finished-matches: /fixtures?status=ft-aet-pen&date=
+
+---
+spring:
+  config:
+    activate.on-profile: docker
+  datasource:
+    url: jdbc:mysql://match-feed-db/feeddb
+
+server:
+  port: 8080
